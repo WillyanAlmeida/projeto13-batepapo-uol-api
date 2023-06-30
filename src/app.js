@@ -19,12 +19,13 @@ const mongoClient = new MongoClient(process.env.DATABASE_URL);
 let db;
 
 mongoClient.connect()
-  .then(() => db = mongoClient.db("batePapoUol"))
+  .then(() => db = mongoClient.db())
   .catch((err) => console.log(err.message));
 
   app.post('/participants', async (req, res) => {
     const {name} = req.body
     console.log(name)
+    console.log(dayjs().format("HH:mm:ss"))
 
     const username = participant.validate(req.body, { abortEarly: false })
     if (username.error) return res.status(422).send("Todos os campos são obrigatórios!")
