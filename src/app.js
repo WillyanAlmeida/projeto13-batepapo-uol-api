@@ -35,7 +35,7 @@ mongoClient.connect()
 
       await db.collection('participants').insertOne({name: name, lastStatus: Date.now()});
       
-      await db.collection('/messages').insertOne({
+      await db.collection('messages').insertOne({
          from: name,
          to: 'Todos',
          text: 'entra na sala...',
