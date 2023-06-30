@@ -22,23 +22,25 @@ mongoClient.connect()
   .catch((err) => console.log(err.message));
 
   app.post('/participants', async (req, res) => {
-    const {nome} = req.body
+    const {name} = req.body
+    console.log(name)
 
-    const username = participant.username(req.body, { abortEarly: false })
+    const username = participant.validate(req.body, { abortEarly: false })
     if (username.error) return res.status(422).send("Todos os campos são obrigatórios!")
   
     try {
-      const resp = await db.collection('/participants').findOne({nome: nome})
+      const resp = await db.collection('participants').findOne({name: name})
       if (resp) return res.status(409).send("Usuário já cadastrado!");
 
-      await db.collection('/participants').insertOne({name: nome, lastStatus: Date.now()});
-      await db.collection('/messages').insertOne({
-        from: nome,
-        to: 'Todos',
-        text: 'entra na sala...',
-        type: 'status',
-        time: 'HH:mm:ss'
-    });
+      await db.collection('participants').insertOne({name: name, lastStatus: Date.now()});
+      console.log(name)
+    //   await db.collection('/messages').insertOne({
+    //     from: nome,
+    //     to: 'Todos',
+    //     text: 'entra na sala...',
+    //     type: 'status',
+    //     time: 'HH:mm:ss'
+    // });
       return res.sendStatus(201);
     } catch (error) {
       console.error(error);
