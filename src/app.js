@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from "cors";
-import 'dotenv/config';
+import dotenv from "dotenv";
+import { MongoClient, ObjectId } from "mongodb";
 import joi from 'joi';
 
 const participant = joi.object({
@@ -30,7 +31,14 @@ mongoClient.connect()
       const resp = await db.collection('/participants').findOne({nome: nome})
       if (resp) return res.status(409).send("Usuário já cadastrado!");
 
-      await db.collection('/participants').insertOne({nome});
+      await db.collection('/participants').insertOne({name: nome, lastStatus: Date.now()});
+      await db.collection('/messages').insertOne({
+        from: nome,
+        to: 'Todos',
+        text: 'entra na sala...',
+        type: 'status',
+        time: 'HH:mm:ss'
+    });
       return res.sendStatus(201);
     } catch (error) {
       console.error(error);
