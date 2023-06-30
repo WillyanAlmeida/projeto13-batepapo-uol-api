@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { MongoClient, ObjectId } from "mongodb";
 import joi from 'joi';
+import dayjs from "dayjs";
 
 const participant = joi.object({
   name: joi.string().required(),
@@ -34,13 +35,13 @@ mongoClient.connect()
 
       await db.collection('participants').insertOne({name: name, lastStatus: Date.now()});
       console.log(name)
-    //   await db.collection('/messages').insertOne({
-    //     from: nome,
-    //     to: 'Todos',
-    //     text: 'entra na sala...',
-    //     type: 'status',
-    //     time: 'HH:mm:ss'
-    // });
+       await db.collection('/messages').insertOne({
+         from: nome,
+         to: 'Todos',
+         text: 'entra na sala...',
+         type: 'status',
+         time: dayjs().format("HH:mm:ss")
+     });
       return res.sendStatus(201);
     } catch (error) {
       console.error(error);
