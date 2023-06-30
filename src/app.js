@@ -34,15 +34,15 @@ mongoClient.connect()
       if (resp) return res.status(409).send("Usuário já cadastrado!");
 
       await db.collection('participants').insertOne({name: name, lastStatus: Date.now()});
-      console.log(name)
-       await db.collection('/messages').insertOne({
-         from: nome,
+      
+      await db.collection('/messages').insertOne({
+         from: name,
          to: 'Todos',
          text: 'entra na sala...',
          type: 'status',
          time: dayjs().format("HH:mm:ss")
      });
-      return res.sendStatus(201);
+      res.sendStatus(201);
     } catch (error) {
       console.error(error);
       res.sendStatus(500);
