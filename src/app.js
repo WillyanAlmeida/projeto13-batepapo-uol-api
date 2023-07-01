@@ -70,8 +70,10 @@ const schemamessage = joi.object({
 })
 
 app.post('/messages', async (req, res) => {
-  const { to, text, type } = req.body
-  const from = req.headers.user
+  let { to, text, type } = req.body
+  let from = req.headers.user;
+  console.log(req.headers)
+  console.log(from)
   console.log(req.body)
   
 
@@ -80,7 +82,7 @@ app.post('/messages', async (req, res) => {
 
   try {
     const resp = await db.collection('participants').findOne({ name: from })  
-    if (resp) return res.status(422).send("Usuário não está na sala");
+    if (!resp) return res.status(422).send("Usuário não está na sala");
 
     await db.collection('messages').insertOne({
       from: from,
@@ -90,6 +92,7 @@ app.post('/messages', async (req, res) => {
       time: dayjs().format("HH:mm:ss")
     });
     res.sendStatus(201);
+    console.log(from)
   } catch (error) {
     console.log(error)
     res.status(500).send(error)
