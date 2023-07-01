@@ -71,11 +71,11 @@ const schemamessage = joi.object({
 
 app.post('/messages', async (req, res) => {
   const { to, text, type } = req.body
-  const from = req.header.user
+  const from = req.headers.user
   console.log(req.body)
   
 
-  const username = schemamessage.validate(req.body, { abortEarly: false })
+  const username = schemamessage.validate(to, text, type, { abortEarly: false })
   if (username.error) return res.status(422).send("Todos os campos são obrigatórios!")
 
   try {
@@ -84,9 +84,9 @@ app.post('/messages', async (req, res) => {
 
     await db.collection('messages').insertOne({
       from: user,
-      to: to,
-      text: text,
-      type: type,
+      to,
+      text,
+      type,
       time: dayjs().format("HH:mm:ss")
     });
     res.sendStatus(201);
