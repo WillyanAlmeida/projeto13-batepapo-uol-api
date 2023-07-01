@@ -83,7 +83,7 @@ app.post('/messages', async (req, res) => {
     if (resp) return res.status(422).send("Usuário não está na sala");
 
     await db.collection('messages').insertOne({
-      from: user,
+      from: from,
       to,
       text,
       type,
@@ -91,6 +91,7 @@ app.post('/messages', async (req, res) => {
     });
     res.sendStatus(201);
   } catch (error) {
+    console.log(error)
     res.status(500).send(error)
   }
 
