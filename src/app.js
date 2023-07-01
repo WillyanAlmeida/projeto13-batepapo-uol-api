@@ -72,7 +72,7 @@ const schemamessage = joi.object({
 app.post('/messages', async (req, res) => {
   let { to, text, type } = req.body
   let from = req.headers.user;
-  console.log(req.headers)
+  console.log(req.headers.user)
   console.log(from)
   console.log(req.body)
   
