@@ -66,7 +66,7 @@ app.get('/participants', async (req, res) => {
 const schemamessage = joi.object({
   to: joi.string().required(),
   text: joi.string().required(),
-  type: joi.string().valid("message", "private_message").required()
+  type: joi.string().valid("message", "private_message").required(),
 })
 
 app.post('/messages', async (req, res) => {
@@ -75,8 +75,8 @@ app.post('/messages', async (req, res) => {
   console.log(req.body)
   
 
-  const username = schemamessage.validate(to, text, type, { abortEarly: false })
-  if (username.error) return res.status(422).send("Todos os campos são obrigatórios!")
+  const username = schemamessage.validate({to, text, type}, { abortEarly: false })
+  if (username.error) return console.log(username.error) //res.status(422).send("Todos os campos são obrigatórios!")
 
   try {
     const resp = await db.collection('participants').findOne({ name: from })  
