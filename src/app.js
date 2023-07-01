@@ -45,8 +45,20 @@ mongoClient.connect()
      });
       res.sendStatus(201);
     } catch (error) {
+      res.status(500).send(error)
+    }
+   
+  })
+
+  app.get('/participants', async (req, res) => {
+  
+    try {
+      const Users = await db.collection('participants').find({}).toArray()
+          
+      res.status(201).send(Users);
+    } catch (error) {
       console.error(error);
-      res.sendStatus(500);
+      res.status(500).send(error)
     }
    
   })
