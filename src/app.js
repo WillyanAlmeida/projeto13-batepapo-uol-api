@@ -103,7 +103,7 @@ app.post('/messages', async (req, res) => {
 
 app.get('/messages', async (req, res) => {
   const schemalimit = joi.object({
-    limit: joi.number().required()
+    limit: joi.number().integer().min(1).required()
   })
 
   const limit = parseInt(req.query.limit);
