@@ -113,9 +113,11 @@ app.get('/messages', async (req, res) => {
 }
 
   let from = req.headers.user;
+  console.log(req.headers.user)
+  console.log(from)
   
   try {
-    Users = await db.collection('messages').find({$or: [{from: from}, {to: from}, {to: "Todos"}]}).toArray()
+    const Users = await db.collection('messages').find({$or: [{from: from}, {to: from}, {to: "Todos"}]}).toArray()
     if(limit === undefined){
       res.status(201).send(Users);
     }else{
