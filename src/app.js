@@ -109,7 +109,7 @@ app.get('/messages', async (req, res) => {
   const limit = parseInt(req.query.limit);
   if(limit != undefined){
   const limitvalidate = schemalimit.validate({limit}, { abortEarly: false })
-  if (limitvalidate.error || !limit) return res.status(422).send(username.error)
+  if (limitvalidate.error || !limit || limit<=0) return res.status(422).send(username.error)
 }
 
   let from = req.headers.user;
