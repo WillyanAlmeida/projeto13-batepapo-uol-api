@@ -151,7 +151,7 @@ app.post('/status', async (req, res) => {
 })
 
 async function remove(){
-  const userList = await db.collection("users").find({lastStatus: {$lte: (Date.now()-10000)}}).toArray();
+  const userList = await db.collection("participants").find({lastStatus: {$lte: (Date.now()-10000)}}).toArray();
 
   userList.forEach(u => {
       db.collection("messages").insertOne({
