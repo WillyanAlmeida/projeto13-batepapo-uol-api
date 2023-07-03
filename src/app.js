@@ -19,7 +19,7 @@ mongoClient.connect()
   .then(() => db = mongoClient.db())
   .catch((err) => console.log(err.message));
 
-const schemaparticipant = joi.object({
+let schemaparticipant = joi.object({
   name: joi.string().required(),
 })
 
@@ -103,7 +103,7 @@ app.post('/messages', async (req, res) => {
 
 app.get('/messages', async (req, res) => {
   const schemalimit = joi.object({
-    limit: joi.number().integer().min(1).required()
+    limit: joi.number().integer().min(1)
   })
 
   const limit = parseInt(req.query.limit);
@@ -119,12 +119,33 @@ app.get('/messages', async (req, res) => {
   try {
     const Users = await db.collection('messages').find({$or: [{from: from}, {to: from}, {to: "Todos"}]}).toArray()
     if(limit === undefined){
-      res.status(201).send(Users);
+      res.status(200).send(Users);
     }else{
     res.status(200).send(Users.slice(-limit));}
   } catch (error) {
     console.error(error);
     res.status(500).send(error)
+  }
+
+})
+
+app.post('/status', async (req, res) => {
+  const user  = req.headers.user
+  console.log(req.headers)
+  console.log(user)
+  
+  const username = schemaparticipant.validate({user}, { abortEarly: false })
+  if (!username.error) return res.status(404).send("Todos os campos são obrigatórios!")
+
+  try {
+    const resp = await db.collection('participants').findOne({ name: user })
+    if (!resp)return res.status(404).send("usuário não está na sala")
+      
+      await db.collection('participants').updateOne({ name: user }, { $set: {lastStatus: Date.now() }}); 
+    
+    res.sendStatus(200);
+  } catch (error) {
+    res.status(404).send(error)
   }
 
 })
