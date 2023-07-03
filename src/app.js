@@ -78,7 +78,7 @@ app.post('/messages', async (req, res) => {
   
 
   const username = schemamessage.validate({to, text, type}, { abortEarly: false })
-  if (username.error) return console.log(username.error) //res.status(422).send("Todos os campos são obrigatórios!")
+  if (username.error || !to || !text || !type) return res.status(422).send(username.error)
 
   try {
     const resp = await db.collection('participants').findOne({ name: from })  
@@ -95,6 +95,33 @@ app.post('/messages', async (req, res) => {
     console.log(from)
   } catch (error) {
     console.log(error)
+    res.status(500).send(error)
+  }
+
+})
+
+
+app.get('/messages', async (req, res) => {
+  const schemalimit = joi.object({
+    limit: joi.number().required()
+  })
+
+  const limit = parseInt(req.query.limit);
+  if(limit != undefined){
+  const limitvalidate = schemalimit.validate({limit}, { abortEarly: false })
+  if (limitvalidate.error || !limit) return res.status(422).send(username.error)
+}
+
+  let from = req.headers.user;
+  
+  try {
+    Users = await db.collection('messages').find({$or: [{from: from}, {to: from}, {to: "Todos"}]}).toArray()
+    if(limit === undefined){
+      res.status(201).send(Users);
+    }else{
+    res.status(201).send(Users.slice(limit*-1));}
+  } catch (error) {
+    console.error(error);
     res.status(500).send(error)
   }
 
