@@ -149,3 +149,20 @@ app.post('/status', async (req, res) => {
   }
 
 })
+
+async function remove(){
+  const userList = await db.collection("users").find({lastStatus: {$lte: (Date.now()-10000)}}).toArray();
+
+  userList.forEach(u => {
+      db.collection("messages").insertOne({
+          from: u.name, 
+          to: 'Todos', 
+          text: 'sai da sala...', 
+          type: 'status', 
+          time: dayjs().format("HH:mm:ss")
+      });
+      db.collection("participants").deleteOne({name: u.name});
+  })
+}
+
+setInterval(remove, 15000);
