@@ -119,7 +119,7 @@ app.get('/messages', async (req, res) => {
     if(limit === undefined){
       res.status(201).send(Users);
     }else{
-    res.status(201).send(Users.slice(limit*-1));}
+    res.status(201).send(Users.slice(-limit));}
   } catch (error) {
     console.error(error);
     res.status(500).send(error)
